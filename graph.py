@@ -52,7 +52,7 @@ class Edge:
 
     def __str__(self) -> str:
         """Return edge vertices tuple as a string."""
-        return str(self.get_edge_endpoints())
+        return f'({str(self._vertex_1)}, {str(self._vertex_2)})'
 
 
 class Graph:
@@ -122,12 +122,17 @@ class Graph:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
+
                 try:
-                    edges_list.append(
-                        (line[:line.index(': ')], line[line.index(': ') + 2:]))
-                except ValueError:
+                    vertex_1 = line[:line.index(': ')]
+
+                except ValueError as exception:
                     raise AssertionError(
-                        'Vertices in the file should be represented as U: V')
+                        'Vertices in the file should be represented as U: V') from exception
+
+                connected_vertices = line[line.index(': ') + 2:].split(', ')
+                for vertex in connected_vertices:
+                    edges_list.append((vertex_1, vertex))
 
         self.create_graph_from_edges_list(edges_list)
 
@@ -199,3 +204,7 @@ class Graph:
             string_repr += f'{key} : {", ".join([str(vertex) for vertex in value])}' + '\n'
 
         return string_repr[:-1]
+
+
+if __name__ == '__main__':
+    pass
