@@ -1,4 +1,5 @@
 from arrays import Array2D
+from lliststack import Stack
 
 class Maze:
     def __init__(self, path: str) -> None:
@@ -24,9 +25,21 @@ class Maze:
             line = file.readline()
             for col in range(self.num_cols()):
                 if line[col] == '*':
-                    self.array[row, col] = Wall()
+                    cell = Wall(row, col)
                 else:
-                    self.array[row, col] = Passage()
+                    cell = Passage(row, col)
+                    if row > 0:
+                        left_cell = self.array[row-1, col]
+                        if isinstance(left_cell, Passage):
+                            cell.left = left_cell
+                            left_cell.right = cell
+                    if col > 0:
+                        top_cell = self.array[row, col-1]
+                        if isinstance(top_cell, Passage):
+                            cell.top = top_cell
+                            top_cell.down = cell
+                self.array[row, col] = cell
+                        
 
     def read_two_values(self, file):
         '''Reads and formats a line from a file into tuple of two integer values'''
@@ -35,6 +48,57 @@ class Maze:
         first, second = map(int, line.split())
         return (first, second)
 
+    def exit_found(self, cell):
+        """Method to determine if the exit was found."""
+        return cell == self.end
+
+    def valid_move(self, cell):
+        return cell is not None and cell.mark == '_'
+
+    def find_path(self):
+        """
+        Attempts to solve the maze by finding a path from the starting cell
+        to the exit. Returns True if a path is found and False otherwise.
+        """
+        current = self.start
+        stack = Stack()
+        stack.push(current)
+
+        while not self.exit_found(current) and not stack.is_empty():
+            current = stack.peek()
+            current.mark_path()
+            impasse = True
+
+            next_cell = current.right
+            if self.valid_move(next_cell):
+                stack.push(next_cell)
+                impasse = False
+
+            next_cell = current.down
+            if self.valid_move(next_cell):
+                stack.push(next_cell)
+                impasse = False
+
+            next_cell = current.left
+            if self.valid_move(next_cell):
+                stack.push(next_cell)
+                impasse = False
+
+            next_cell = current.top
+            if self.valid_move(next_cell):
+                stack.push(next_cell)
+                impasse = False
+
+            if impasse:
+                current.mark_tried()
+                stack.pop()
+
+        if stack.is_empty():
+            return False
+
+        current.mark_path()
+        return True
+
     def clear(self):
         """Clear the maze by removing all "path" and "tried" tokens."""
         for row in range(self.num_rows()):
@@ -42,7 +106,6 @@ class Maze:
                 cell = self.array[row, col]
                 if isinstance(cell, Passage):
                     cell.clear_mark()
-
 
     def __str__(self):
         """Returns a text-based representation of the maze."""
@@ -55,19 +118,31 @@ class Maze:
 
 
 class Cell:
-    def __init__(self) -> None:
+    def __init__(self, row, col) -> None:
         self.mark = None
+        self.row = row
+        self.col = col
 
     def __str__(self):
         return self.mark
+
+    def __eq__(self, other):
+        return self.row == other.row and self.col == other.col
+
+    def __ne__(self, other):
+        return not self == other
 
 
 class Passage(Cell):
     PATH_TOKEN = "x"
     TRIED_TOKEN = "o"
 
-    def __init__(self) -> None:
-        super()
+    def __init__(self, row, col) -> None:
+        super().__init__(row, col)
+        self.right = None
+        self.down = None
+        self.left = None
+        self.top = None
         self.clear_mark()
 
     def mark_tried(self):
@@ -82,7 +157,13 @@ class Passage(Cell):
         self.mark = '_'
 
 
+
 class Wall(Cell):
-    def __init__(self) -> None:
-        super()
+    def __init__(self, row, col) -> None:
+        super().__init__(row, col)
         self.mark = '*'
+
+
+maze = Maze('maze_file.txt')
+print(maze.find_path())
+print(maze)
