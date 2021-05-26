@@ -5,10 +5,7 @@ and serves for the crossword solving.
 
 import random
 from arrays import Array2D
-
-
-# solver = CrosswordSolver()
-# words_num = solver.count_words()
+from backtracking import CrosswordSolver
 
 
 def choose_mode() -> int:
@@ -26,14 +23,36 @@ def choose_mode() -> int:
     return mode
 
 
-def get_random(file: str, words_num: int) -> set:
+def get_random(file: str, words_num: int) -> list:
     """Returns random words from file."""
     words = []
     with open(file, encoding='utf-8') as words_f:
         for word in words_f:
             words.append(word.strip().upper())
     random.shuffle(words)
-    return words[:words_num]
+    final_words = []
+    left = words_num
+    while left:
+        word = words.pop()
+        if len(word) > 2:
+            final_words.append(word)
+            left -= 1
+    return final_words
+
+
+def get_user_words(words_num: int) -> list:
+    """Returns list of user words."""
+    words = []
+    left = words_num
+    while left:
+        print(f'You have {left} words left to enter.')
+        word = input("Enter the word to be in the crossword: ")
+        if len(word) < 3:
+            print("Word must must be not shorter than 3 symbols.")
+        else:
+            words.append(word.upper())
+            left -= 1
+    return words
 
 
 def read_matrix(file: str):
@@ -49,6 +68,19 @@ def read_matrix(file: str):
     return grid
 
 
-# print(choose_mode())
-# print(get_random('words.txt', 5))
-# print(read_matrix('grid.txt')[9, 9])
+def solve_crossword(matrix_file: str):
+    """Main function that solves the crossword."""
+    matrix = read_matrix(matrix_file)
+    solver = CrosswordSolver()
+    words_num = len(solver.count_words())
+    mode = choose_mode()
+    if mode == 1:
+        words = get_user_words(words_num)
+    else:
+        words = get_random('words.txt')
+    solver.words = words
+    solver.place_words()
+
+
+if __name__ == "__main__":
+    solve_crossword('grid.txt')
