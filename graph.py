@@ -1,5 +1,6 @@
 """Module with graph coloring with backtracking method implementation."""
 
+
 class Vertex:
     """Class to represent a graph vertex."""
 
@@ -24,7 +25,7 @@ class Vertex:
         self.set_color(None)
 
     def is_colored(self) -> bool:
-        """Check wether the vertex is colored."""
+        """Check whether the vertex is colored."""
         return bool(self._color)
 
     def __str__(self) -> str:
@@ -113,14 +114,20 @@ class Graph:
         where each line contains two graph vertices in the
         next format: Vertex_item_1: Vertex_item_2, e.g. A1: A2.
         """
+        assert isinstance(path, str), 'File path should be a string.'
+
         self._clear()
         edges_list = list()
 
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                edges_list.append(
-                    (line[:line.index(':')], line[line.index(':') + 2:]))
+                try:
+                    edges_list.append(
+                        (line[:line.index(': ')], line[line.index(': ') + 2:]))
+                except ValueError:
+                    raise AssertionError(
+                        'Vertices in the file should be represented as U: V')
 
         self.create_graph_from_edges_list(edges_list)
 
@@ -141,7 +148,7 @@ class Graph:
 
     def _is_available(self, vertex: 'Vertex', color: int) -> bool:
         """
-        Check wether the particular color can be set to the vertex,
+        Check whether the particular color can be set to the vertex,
         based on its connected vertices colors.
         """
         for connected_vert in self._get_connected_vertices(vertex):
@@ -175,6 +182,10 @@ class Graph:
         Return list of the string-represented vertices of the graph if it
         can be colored with a limited number max_color of colors, else None.
         """
+        assert isinstance(
+            max_color, int), 'Colors number should be an integer.'
+        assert max_color >= 1, 'Colors number should be greater than 1.'
+
         if self._recurse(0, max_color):
             return [str(vertex) for vertex in self._get_all_vertices()]
 
