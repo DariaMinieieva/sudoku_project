@@ -1,7 +1,9 @@
+'''This module implements searching of the path in the maze using backtracking'''
 from arrays import Array2D
 from lliststack import Stack
 
 class Maze:
+    '''This class represents Maze using a 2-D array'''
     def __init__(self, path: str) -> None:
         with open(path, mode='r', encoding='utf-8') as file:
             (num_rows, num_cols) = self.read_two_values(file)
@@ -13,14 +15,15 @@ class Maze:
         self.end = self.array[end_coord[0], end_coord[1]]
 
     def num_rows(self):
-        """Returns the number of rows in the maze."""
+        '''Returns the number of rows in the maze'''
         return self.array.num_rows()
 
     def num_cols(self):
-        """Returns the number of columns in the maze."""
+        '''Returns the number of columns in the maze'''
         return self.array.num_cols()
 
     def read_maze(self, file):
+        '''Read maze from file'''
         for row in range(self.num_rows()):
             line = file.readline()
             for col in range(self.num_cols()):
@@ -39,7 +42,7 @@ class Maze:
                             cell.top = top_cell
                             top_cell.down = cell
                 self.array[row, col] = cell
-                        
+
 
     def read_two_values(self, file):
         '''Reads and formats a line from a file into tuple of two integer values'''
@@ -49,17 +52,18 @@ class Maze:
         return (first, second)
 
     def exit_found(self, cell):
-        """Method to determine if the exit was found."""
+        '''Method to determine if the exit was found.'''
         return cell == self.end
 
     def valid_move(self, cell):
+        '''Return True if move is valid and False otherwise'''
         return cell is not None and cell.mark == '_'
 
     def find_path(self):
-        """
+        '''
         Attempts to solve the maze by finding a path from the starting cell
         to the exit. Returns True if a path is found and False otherwise.
-        """
+        '''
         current = self.start
         stack = Stack()
         stack.push(current)
@@ -100,7 +104,7 @@ class Maze:
         return True
 
     def clear(self):
-        """Clear the maze by removing all "path" and "tried" tokens."""
+        '''Clear the maze by removing all 'path' and 'tried' tokens.'''
         for row in range(self.num_rows()):
             for col in range(self.num_cols()):
                 cell = self.array[row, col]
@@ -108,7 +112,7 @@ class Maze:
                     cell.clear_mark()
 
     def __str__(self):
-        """Returns a text-based representation of the maze."""
+        '''Returns a text-based representation of the maze.'''
         string = ''
         for row in range(self.num_rows()):
             for col in range(self.num_cols()):
@@ -118,24 +122,32 @@ class Maze:
 
 
 class Cell:
+    '''This class represents cell of the maze'''
     def __init__(self, row, col) -> None:
         self.mark = None
         self.row = row
         self.col = col
 
     def __str__(self):
-        return self.mark
+        '''Return string representing a cell'''
+        return str(self.mark)
 
     def __eq__(self, other):
+        '''Return True if two cells are equal and False otherwise'''
         return self.row == other.row and self.col == other.col
 
     def __ne__(self, other):
+        '''Return False if two cells are equal and True otherwise'''
         return not self == other
 
 
 class Passage(Cell):
-    PATH_TOKEN = "x"
-    TRIED_TOKEN = "o"
+    '''
+    This class represents cell of the maze which is a passage
+    Connected with others cells in 4 directions
+    '''
+    PATH_TOKEN = 'x'
+    TRIED_TOKEN = 'o'
 
     def __init__(self, row, col) -> None:
         super().__init__(row, col)
@@ -146,24 +158,26 @@ class Passage(Cell):
         self.clear_mark()
 
     def mark_tried(self):
-        """Drops a "tried" token at the given cell."""
+        '''Drops a 'tried' token at the given cell.'''
         self.mark = self.TRIED_TOKEN
 
     def mark_path(self):
-        """Drops a "path" token at the given cell."""
+        '''Drops a 'path' token at the given cell.'''
         self.mark = self.PATH_TOKEN
 
     def clear_mark(self):
+        '''Clear mark of the cell'''
         self.mark = '_'
 
 
-
 class Wall(Cell):
+    '''This class represents cell of the maze which is a wall'''
     def __init__(self, row, col) -> None:
         super().__init__(row, col)
         self.mark = '*'
 
 
-maze = Maze('maze_file.txt')
-print(maze.find_path())
-print(maze)
+if __name__ == '__main__':
+    maze = Maze('maze_file.txt')
+    print(maze.find_path())
+    print(maze)
