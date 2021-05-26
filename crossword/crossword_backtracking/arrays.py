@@ -5,6 +5,7 @@ import ctypes
 
 class Array:
     """Implements the Array ADT using array capabilities of the ctypes module."""
+
     def __init__(self, size):
         """Creates an array with size elements."""
         assert size > 0, "Array size must be > 0"
@@ -15,29 +16,24 @@ class Array:
         # Initialize each element.
         self.clear(None)
 
-
     def __len__(self):
         """Returns the size of the array."""
         return self._size
-
 
     def __getitem__(self, index):
         """Gets the contents of the index element."""
         assert 0 <= index < len(self), "Array subscript out of range"
         return self._elements[index]
 
-
     def __setitem__(self, index, value):
         """Puts the value in the array element at index position."""
         assert 0 <= index < len(self), "Array subscript out of range"
         self._elements[index] = value
 
-
     def clear(self, value):
         """Clears the array by setting each element to the given value."""
         for i in range(len(self)):
             self._elements[i] = value
-
 
     def __iter__(self):
         """Returns the array's iterator for traversing the elements."""
@@ -46,6 +42,7 @@ class Array:
 
 class _ArrayIterator:
     """An iterator for the Array ADT."""
+
     def __init__(self, the_array):
         self._array_ref = the_array
         self._cur_index = 0
@@ -73,22 +70,18 @@ class Array2D:
         for i in range(num_rows):
             self.rows[i] = Array(num_cols)
 
-
     def num_rows(self):
         """Returns the number of rows in the 2 -D array."""
         return len(self.rows)
-
 
     def num_cols(self):
         """Returns the number of columns in the 2 -D array."""
         return len(self.rows[0])
 
-
     def clear(self, value):
         """Clears the array by setting every element to the given value."""
         for row in range(self.num_rows()):
             self.rows[row].clear(value)
-
 
     def __getitem__(self, index_tuple):
         """Gets the contents of the element at position [i, j]"""
@@ -100,7 +93,6 @@ class Array2D:
         array_1d = self.rows[row]
         return array_1d[col]
 
-
     def __setitem__(self, index_tuple, value):
         """Sets the contents of the element at position [i,j] to value."""
         assert len(index_tuple) == 2, "Invalid number of array subscripts."
@@ -110,6 +102,17 @@ class Array2D:
             "Array subscript out of range."
         array_1d = self.rows[row]
         array_1d[col] = value
+
+    def copy(self):
+        rows = self.num_rows()
+        cols = self.num_cols()
+        new_array = Array2D(rows, cols)
+
+        for i in range(rows):
+            for j in range(cols):
+                new_array[i, j] = self[i, j]
+
+        return new_array
 
 
 class DynamicArray:
