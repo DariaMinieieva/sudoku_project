@@ -1,0 +1,93 @@
+import unittest
+from graph import Graph
+
+
+class TestGraphColoring(unittest.TestCase):
+
+    def setUp(self):
+        self.graph_1 = Graph(
+            [('A', 'B'), ('B', 'C'), ('A', 'C'), ('C', 'D'), ('A', 'D')])
+        self.graph_2 = Graph([('A', 'B'), ('C', 'D')])
+        self.graph_3 = Graph([('A', 'A')])
+        self.graph_4 = Graph([])
+        self.graph_5 = Graph(set())
+        self.graph_6 = Graph({('A', 'B'), ('A', 'C')})
+
+    def test_assertion_errors(self):
+        with self.assertRaises(AssertionError) as err:
+            self.graph_1.color_graph(0)
+        self.assertEqual(str(err.exception),
+                         'Colors number should be greater than 1.')
+
+        with self.assertRaises(AssertionError) as err:
+            self.graph_1.color_graph(-1)
+        self.assertEqual(str(err.exception),
+                         'Colors number should be greater than 1.')
+
+        with self.assertRaises(AssertionError) as err:
+            self.graph_1.color_graph([])
+        self.assertEqual(str(err.exception),
+                         'Colors number should be an integer.')
+    
+    def test_incorrect_graph_file_representation(self):
+        graph = Graph()
+
+        with self.assertRaises(AssertionError) as err:
+            graph.create_graph_from_file('graph_files/incorrect_file.txt')
+        self.assertEqual(str(err.exception),
+                         'Vertices in the file should be represented as U: V')
+
+    def test_connected_graph_and_read_from_file(self):
+        self.assertEqual(self.graph_1.color_graph(2), None)
+        self.assertEqual(self.graph_1.color_graph(3),
+                         ['A:1', 'B:2', 'C:3', 'D:2'])
+
+        graph = Graph()
+        graph.create_graph_from_file('graph_files/connected_graph.txt')
+        self.assertEqual(graph.color_graph(2), None)
+        self.assertEqual(graph.color_graph(3),
+                         ['A:1', 'B:2', 'C:3', 'D:2'])
+
+        self.assertEqual(self.graph_1.color_graph(2),
+                         graph.color_graph(2))
+        self.assertEqual(self.graph_1.color_graph(3),
+                         graph.color_graph(3))
+
+    def test_disconnected_graph_and_read_from_file(self):
+        self.assertEqual(self.graph_2.color_graph(1), None)
+        self.assertEqual(self.graph_2.color_graph(2),
+                         ['A:1', 'B:2', 'C:1', 'D:2'])
+
+        graph = Graph()
+        graph.create_graph_from_file('graph_files/disconnected_graph.txt')
+        self.assertEqual(graph.color_graph(1), None)
+        self.assertEqual(graph.color_graph(2),
+                         ['A:1', 'B:2', 'C:1', 'D:2'])
+
+        self.assertEqual(self.graph_2.color_graph(1),
+                         graph.color_graph(1))
+        self.assertEqual(self.graph_2.color_graph(2),
+                         graph.color_graph(2))
+
+    def test_single_vertex_graph(self):
+        self.assertEqual(self.graph_3.color_graph(1), ['A:1'])
+
+    def test_empty_vertices_list_and_read_file(self):
+        self.assertEqual(self.graph_4.color_graph(1), [])
+
+        graph = Graph()
+        graph.create_graph_from_file('graph_files/empty_graph.txt')
+        self.assertEqual(graph.color_graph(1), [])
+
+        self.assertEqual(self.graph_4.color_graph(1),
+                         graph.color_graph(1))
+        
+
+    def test_graph_built_from_set(self):
+        self.assertEqual(self.graph_5.color_graph(1), [])
+        self.assertTrue(set(self.graph_6.color_graph(2)) in (
+            {'A:1', 'B:2', 'C:2'}, {'A:2', 'B:1', 'C:1'}))
+
+
+if __name__ == '__main__':
+    unittest.main()
