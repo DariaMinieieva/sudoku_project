@@ -31,13 +31,13 @@ class Maze:
                     cell = Wall(row, col)
                 else:
                     cell = Passage(row, col)
-                    if row > 0:
-                        left_cell = self.array[row-1, col]
+                    if col > 0:
+                        left_cell = self.array[row, col-1]
                         if isinstance(left_cell, Passage):
                             cell.left = left_cell
                             left_cell.right = cell
-                    if col > 0:
-                        top_cell = self.array[row, col-1]
+                    if row > 0:
+                        top_cell = self.array[row-1, col]
                         if isinstance(top_cell, Passage):
                             cell.top = top_cell
                             top_cell.down = cell
@@ -73,7 +73,7 @@ class Maze:
             current.mark_path()
             impasse = True
 
-            next_cell = current.right
+            next_cell = current.left
             if self.valid_move(next_cell):
                 stack.push(next_cell)
                 impasse = False
@@ -83,7 +83,7 @@ class Maze:
                 stack.push(next_cell)
                 impasse = False
 
-            next_cell = current.left
+            next_cell = current.right
             if self.valid_move(next_cell):
                 stack.push(next_cell)
                 impasse = False
@@ -93,14 +93,12 @@ class Maze:
                 stack.push(next_cell)
                 impasse = False
 
-            if impasse:
+            if impasse and not self.exit_found(current):
                 current.mark_tried()
                 stack.pop()
 
         if stack.is_empty():
             return False
-
-        current.mark_path()
         return True
 
     def clear(self):
