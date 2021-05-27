@@ -72,7 +72,7 @@ def solve_crossword(matrix_file: str):
     """Main function that solves the crossword."""
     matrix = read_matrix(matrix_file)
     solver = CrosswordSolver(matrix)
-    words_num = len(solver.count_words())
+    words_num = len(solver.place_possible())
     mode = choose_mode()
     if mode == 1:
         words = get_user_words(words_num)
