@@ -71,7 +71,7 @@ def read_matrix(file: str):
 def solve_crossword(matrix_file: str):
     """Main function that solves the crossword."""
     matrix = read_matrix(matrix_file)
-    solver = CrosswordSolver()
+    solver = CrosswordSolver(matrix)
     words_num = len(solver.count_words())
     mode = choose_mode()
     if mode == 1:
