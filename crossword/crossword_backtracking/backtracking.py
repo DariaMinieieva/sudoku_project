@@ -1,37 +1,35 @@
-from arrays import Array2D
-from copy import deepcopy
-ways = 0
+"""This module implements backtracking algorithm to solve crossword."""
 
+# from arrays import Array2D
 
 class CrosswordSolver:
-    def __init__(self, matrix, words=None):
+    """Class for crossword solving representation."""
+
+
+    def __init__(self, matrix: 'Array2D', words=None):
+        """Creates a new crossword solver."""
         self.matrix = matrix
         self.num_rows = self.matrix.num_rows()
         self.num_cols = self.matrix.num_cols()
         self.words = words
-        self.ways = 0
         self.matrix_results = set()
         self.possible_placements = []
 
-    def set_words(self, words):
+
+    def set_words(self, words: list):
+        """Sets the words to be in the crossword from list."""
         self.words = words
 
-    def get_empty(self):
-        res = []
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):
-                if self.matrix[i, j] == "-":
-                    res.append((i, j))
-
-        return res
 
     def place_words(self):
+        """
+        Main function that implements backtracking algorithm to find
+        possible ways to solve the crossword. Uses recursive helper function.
+        """
         words = self.words.copy()
-
-        placements = self.count_words()
+        placements = self.place_possible()
 
         def helper(ind, placements, matrix, words):
-            # print(CrosswordSolver(matrix), "\n")
             if ind < len(words):
 
                 for place in placements:
@@ -42,7 +40,8 @@ class CrosswordSolver:
                         if place[0] == "h":
                             count = 0
                             for i in range(place[1][1], len(curr_word)+place[1][1]):
-                                if matrix_copy[place[1][0], i] != "-" and matrix_copy[place[1][0], i] != curr_word[count]:
+                                if matrix_copy[place[1][0], i] != "-" and \
+                                    matrix_copy[place[1][0], i] != curr_word[count]:
                                     break
                                 count += 1
                             else:
@@ -58,14 +57,13 @@ class CrosswordSolver:
                         else:
                             count = 0
                             for i in range(place[1][0], len(curr_word)+place[1][0]):
-                                if matrix_copy[i, place[1][1]] != "-" and matrix_copy[i, place[1][1]] != curr_word[count]:
+                                if matrix_copy[i, place[1][1]] != "-" and \
+                                    matrix_copy[i, place[1][1]] != curr_word[count]:
                                     break
                                 count += 1
                             else:
                                 count = 0
                                 for i in range(place[1][0], len(curr_word)+place[1][0]):
-                                    # print(count)
-                                    # print(curr_word)
                                     matrix_copy[i, place[1][1]
                                                 ] = curr_word[count]
                                     count += 1
@@ -77,21 +75,10 @@ class CrosswordSolver:
 
         helper(0, placements, self.matrix, words)
 
-    def remove_wrong_indices(self, matrix, letters_indices, wrong):
-        letters_to_remove = letters_indices[wrong]
-        letters_to_leave = []
 
-        letters_indices.pop(wrong)
-
-        for i in letters_indices:
-            for j in letters_indices[i]:
-                letters_to_leave.append(j)
-
-        for i in letters_to_remove:
-            if i not in letters_to_leave:
-                matrix[i[0], i[1]] = "-"
-
-    def count_words(self):
+    def place_possible(self):
+        """Describes the crossword grid by finding free places
+        to set the words and returns them as a list."""
         for i in range(self.num_rows):
             cont_word = 0
             ind_y = 0
@@ -132,7 +119,9 @@ class CrosswordSolver:
 
         return self.possible_placements
 
+
     def __str__(self):
+        """Returns a string representation of a crossword."""
         res = []
 
         for i in range(self.num_rows):
@@ -144,7 +133,9 @@ class CrosswordSolver:
 
         return "\n".join(res)
 
+
     def __eq__(self, other):
+        """Compares two crosswords and returns True if they are the same or False otherwise."""
         for i in range(self.num_rows):
             for j in range(self.num_cols):
                 if self.matrix[i, j] != other.matrix[i, j]:
@@ -153,35 +144,5 @@ class CrosswordSolver:
         return True
 
     def __hash__(self):
+        """Returns a hashable object of crossword."""
         return hash(str(self))
-
-
-if __name__ == "__main__":
-    from random import shuffle
-    test = Array2D(4, 4)
-    test[0, 0] = "-"
-    test[0, 1] = "-"
-    test[0, 2] = "-"
-    test[0, 3] = "-"
-    test[1, 0] = "+"
-    test[1, 1] = "-"
-    test[1, 2] = "+"
-    test[1, 3] = "+"
-    test[2, 0] = "-"
-    test[2, 1] = "-"
-    test[2, 2] = "-"
-    test[2, 3] = "-"
-    test[3, 0] = "-"
-    test[3, 1] = "-"
-    test[3, 2] = "-"
-    test[3, 3] = "-"
-    cs = CrosswordSolver(test)
-    test_list = ["home", "adoa", "aadd", "day"]
-    shuffle(test_list)
-    cs.set_words(test_list)
-
-    print(cs, "\n")
-    # print(cs.count_words())
-    cs.place_words()
-    for i in cs.matrix_results:
-        print(i, "\n")
