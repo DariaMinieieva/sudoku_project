@@ -5,7 +5,7 @@ and serves for the crossword solving.
 
 import random
 from arrays import Array2D
-from backtracking import CrosswordSolver
+from crossword.crossword_backtracking.backtracking import CrosswordSolver
 
 
 def choose_mode() -> int:
@@ -77,9 +77,17 @@ def solve_crossword(matrix_file: str):
     if mode == 1:
         words = get_user_words(words_num)
     else:
-        words = get_random('words.txt')
-    solver.words = words
+        words = get_random('words.txt', words_num)
+    # print(words)
+    solver.set_words(words)
     solver.place_words()
+
+    if len(solver.matrix_results) == 0:
+        print("There is no way to solve a crossword!")
+    else:
+        for i, item in enumerate(solver.matrix_results):
+            print(f"Option #{i+1}: ")
+            print(item, "\n")
 
 
 if __name__ == "__main__":

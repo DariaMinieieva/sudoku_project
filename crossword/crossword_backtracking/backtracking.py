@@ -1,4 +1,3 @@
-from stack import Stack
 from arrays import Array2D
 from copy import deepcopy
 ways = 0
@@ -11,7 +10,7 @@ class CrosswordSolver:
         self.num_cols = self.matrix.num_cols()
         self.words = words
         self.ways = 0
-        self.matrix_results = None
+        self.matrix_results = set()
         self.possible_placements = []
 
     def set_words(self, words):
@@ -27,71 +26,56 @@ class CrosswordSolver:
         return res
 
     def place_words(self):
-        used_words = Stack()
         words = self.words.copy()
-        empty = self.get_empty()
 
         placements = self.count_words()
-        checked = []
 
-        allowed = {}
-        for i in words:
-            allowed[i] = []
+        def helper(ind, placements, matrix, words):
+            # print(CrosswordSolver(matrix), "\n")
+            if ind < len(words):
 
-        # letters_indices = {}
+                for place in placements:
+                    matrix_copy = matrix.copy()
 
-        used_words.push(words.pop(0))
+                    curr_word = words[ind]
+                    if place[2] >= len(curr_word) and place[3] == "f":
+                        if place[0] == "h":
+                            count = 0
+                            for i in range(place[1][1], len(curr_word)+place[1][1]):
+                                if matrix_copy[place[1][0], i] != "-" and matrix_copy[place[1][0], i] != curr_word[count]:
+                                    break
+                                count += 1
+                            else:
+                                count = 0
+                                for i in range(place[1][1], len(curr_word)+place[1][1]):
+                                    matrix_copy[place[1][0],
+                                                i] = curr_word[count]
+                                    count += 1
 
-        def helper(used_words, placements, matrix, words):
-            print(CrosswordSolver(matrix), "\n")
-            matrix_copy = matrix.copy()
-            if not words:
-                return False
+                                helper(ind+1, placements,
+                                       matrix_copy, words)
 
-            curr_word = used_words.peek()
-
-            # placed = False
-            indices = []
-            for place in placements:
-                if place[2] >= len(curr_word) and place[3] == "f":
-                    if place[0] == "h":
-                        for i in range(place[1][1], len(curr_word)):
-                            if matrix_copy[place[1][0], i] != "-" and matrix_copy[place[1][0], i] != curr_word[i]:
-                                break
                         else:
-                            for i in range(place[1][1], len(curr_word)):
-                                matrix_copy[place[1][0], i] = curr_word[i]
-                            used_words.push(words.pop(0))
-                            indices.append((place[1][0], i))
+                            count = 0
+                            for i in range(place[1][0], len(curr_word)+place[1][0]):
+                                if matrix_copy[i, place[1][1]] != "-" and matrix_copy[i, place[1][1]] != curr_word[count]:
+                                    break
+                                count += 1
+                            else:
+                                count = 0
+                                for i in range(place[1][0], len(curr_word)+place[1][0]):
+                                    # print(count)
+                                    # print(curr_word)
+                                    matrix_copy[i, place[1][1]
+                                                ] = curr_word[count]
+                                    count += 1
 
-                            last_place = placements.index(place)
-                            place[3] = "t"
-                            # placed = True
-                            return helper(used_words, placements, matrix_copy, words)
+                                helper(ind+1, placements,
+                                       matrix_copy, words)
+            else:
+                self.matrix_results.add(CrosswordSolver(matrix))
 
-                    else:
-                        for i in range(place[1][0], len(curr_word)):
-                            if matrix_copy[i, place[1][1]] != "-" and matrix_copy[i, place[1][1]] != curr_word[i]:
-                                break
-                        else:
-                            for i in range(place[1][1], len(curr_word)):
-                                matrix_copy[i, place[1][1]] = curr_word[i]
-                            used_words.push(words.pop(0))
-                            indices.append((place[1][0], i))
-
-                            last_place = placements.index(place)
-                            place[3] = "t"
-                            # placed = True
-                            return helper(used_words, placements, matrix_copy, words)
-            words.append(used_words.pop())
-            words.append(used_words.pop())
-            # self.remove_wrong_indices(matrix_copy, )
-
-            return helper(used_words, placements, matrix, words)
-
-            # letters_indices[curr_word] = indices
-
-        return helper(used_words, placements, self.matrix, words)
+        helper(0, placements, self.matrix, words)
 
     def remove_wrong_indices(self, matrix, letters_indices, wrong):
         letters_to_remove = letters_indices[wrong]
@@ -168,6 +152,9 @@ class CrosswordSolver:
 
         return True
 
+    def __hash__(self):
+        return hash(str(self))
+
 
 if __name__ == "__main__":
     from random import shuffle
@@ -190,9 +177,11 @@ if __name__ == "__main__":
     test[3, 3] = "-"
     cs = CrosswordSolver(test)
     test_list = ["home", "adoa", "aadd", "day"]
-    # shuffle(test_list)
+    shuffle(test_list)
     cs.set_words(test_list)
 
-    print(cs)
+    print(cs, "\n")
     # print(cs.count_words())
-    print(cs.place_words())
+    cs.place_words()
+    for i in cs.matrix_results:
+        print(i, "\n")
