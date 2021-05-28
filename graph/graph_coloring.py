@@ -54,7 +54,7 @@ class Edge:
         """Return edge vertices tuple as a string."""
         return f'({str(self._vertex_1)}, {str(self._vertex_2)})'
 
-
+# hjdhjd
 class Graph:
     """Class to represent a non-oriented graph based on dictionary."""
 

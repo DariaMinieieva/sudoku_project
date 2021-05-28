@@ -5,11 +5,11 @@ import sys
 import os
 
 sys.path.append(os.getcwd())
-from graph import Graph
+from graph.graph_coloring import Graph
 
 
 class TestGraphColoring(unittest.TestCase):
-    """Class to unit test class Graph from graph.py."""
+    """Class to unit test class Graph from graph_coloring.py."""
 
     def setUp(self):
         """Build initial graphs from edges lists."""
@@ -49,7 +49,7 @@ class TestGraphColoring(unittest.TestCase):
         graph = Graph()
 
         with self.assertRaises(AssertionError) as err:
-            graph.create_graph_from_file('graph_files/incorrect_file.txt')
+            graph.create_graph_from_file('graph/graph_coloring_tests/incorrect_file.txt')
         self.assertEqual(str(err.exception),
                          'Vertices in the file should be represented as U: V')
 
@@ -60,13 +60,13 @@ class TestGraphColoring(unittest.TestCase):
                          ['A:1', 'B:2', 'C:3', 'D:2'])
 
         graph_1 = Graph()
-        graph_1.create_graph_from_file('graph_files/graph_1.txt')
+        graph_1.create_graph_from_file('graph/graph_coloring_tests/graph_1.txt')
         self.assertEqual(graph_1.color_graph(2), None)
         self.assertEqual(graph_1.color_graph(3),
                          ['A:1', 'B:2', 'C:3', 'D:2'])
 
         graph_2 = Graph()
-        graph_2.create_graph_from_file('graph_files/graph_2.txt')
+        graph_2.create_graph_from_file('graph/graph_coloring_tests/graph_2.txt')
         self.assertEqual(graph_2.color_graph(2), None)
         self.assertEqual(graph_2.color_graph(3),
                          ['A:1', 'B:2', 'C:3', 'D:2'])
@@ -101,7 +101,7 @@ class TestGraphColoring(unittest.TestCase):
         self.assertEqual(self.graph_4.color_graph(1), [])
 
         graph = Graph()
-        graph.create_graph_from_file('graph_files/empty_graph.txt')
+        graph.create_graph_from_file('graph/graph_coloring_tests/empty_graph.txt')
         self.assertEqual(graph.color_graph(1), [])
 
         self.assertEqual(self.graph_4.color_graph(1),

@@ -5,14 +5,14 @@ import os
 from time import time
 
 sys.path.append(os.getcwd())
-from graph import Graph
+from graph.graph_coloring import Graph
 
 
 graph = Graph()
-graph.create_graph_from_file('graph_files/max_size_graph.txt')
+graph.create_graph_from_file('graph/graph_coloring_tests/max_size_graph.txt')
 
 start = time()
-colored_vertices = graph.color_graph(1000000)
+colored_vertices = graph.color_graph(995)
 end = time()
 
 expected = [f'V{num}:{num}' for num in range(1, 995)]
