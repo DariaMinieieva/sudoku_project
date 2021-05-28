@@ -1,10 +1,8 @@
 """This module implements backtracking algorithm to solve crossword."""
 
-# from arrays import Array2D
 
 class CrosswordSolver:
     """Class for crossword solving representation."""
-
 
     def __init__(self, matrix: 'Array2D', words=None):
         """Creates a new crossword solver."""
@@ -15,11 +13,9 @@ class CrosswordSolver:
         self.matrix_results = set()
         self.possible_placements = []
 
-
     def set_words(self, words: list):
         """Sets the words to be in the crossword from list."""
         self.words = words
-
 
     def place_words(self):
         """
@@ -41,7 +37,7 @@ class CrosswordSolver:
                             count = 0
                             for i in range(place[1][1], len(curr_word)+place[1][1]):
                                 if matrix_copy[place[1][0], i] != "-" and \
-                                    matrix_copy[place[1][0], i] != curr_word[count]:
+                                        matrix_copy[place[1][0], i] != curr_word[count]:
                                     break
                                 count += 1
                             else:
@@ -58,7 +54,7 @@ class CrosswordSolver:
                             count = 0
                             for i in range(place[1][0], len(curr_word)+place[1][0]):
                                 if matrix_copy[i, place[1][1]] != "-" and \
-                                    matrix_copy[i, place[1][1]] != curr_word[count]:
+                                        matrix_copy[i, place[1][1]] != curr_word[count]:
                                     break
                                 count += 1
                             else:
@@ -74,7 +70,6 @@ class CrosswordSolver:
                 self.matrix_results.add(CrosswordSolver(matrix))
 
         helper(0, placements, self.matrix, words)
-
 
     def place_possible(self):
         """Describes the crossword grid by finding free places
@@ -119,7 +114,6 @@ class CrosswordSolver:
 
         return self.possible_placements
 
-
     def __str__(self):
         """Returns a string representation of a crossword."""
         res = []
@@ -132,7 +126,6 @@ class CrosswordSolver:
             res.append(temp)
 
         return "\n".join(res)
-
 
     def __eq__(self, other):
         """Compares two crosswords and returns True if they are the same or False otherwise."""
