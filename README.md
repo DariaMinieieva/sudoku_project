@@ -20,4 +20,4 @@ Run the following to install:
 pip install backtracking_games
 ```
 ### License
-backtracking_games project is available under MIT license. See LICENSE for more information.
+backtracking_games project is available under MIT license. See [LICENSE](https://github.com/DariaMinieieva/sudoku_project/edit/main/LICENSE "LICENSE") for more information.
