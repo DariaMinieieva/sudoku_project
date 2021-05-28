@@ -174,8 +174,10 @@ class Wall(Cell):
         super().__init__(row, col)
         self.mark = '*'
 
-
-if __name__ == '__main__':
-    maze = Maze('maze_file.txt')
+def main(path: str):
+    maze = Maze(path)
     print(maze.find_path())
     print(maze)
+
+if __name__     == '__main__':
+    main('maze_file.txt')
