@@ -9,10 +9,20 @@ from board import Board
 class SudokuDrawer:
     """Class for solving sudoku and visualizing it."""
 
-    def __init__(self, board: list) -> None:
+    def __init__(self, board_file: str) -> None:
         """Creates a new sudoku drawer."""
-        self.board = deepcopy(board)
-        self.sudoku = Board(board)
+        self.board_file = board_file
+        self.board = self.read_board()
+        self.sudoku = Board(deepcopy(self.board))
+
+
+    def read_board(self) -> list:
+        """Reads a file with board and returns a list of lists with sudoku puzzle."""
+        board = []
+        with open(self.board_file, encoding='utf-8') as board_f:
+            for line in board_f:
+                board.append(list(map(int, line.strip().split(','))))
+        return board
 
 
     def draw_matrix(self, matrix):
@@ -45,7 +55,7 @@ class SudokuDrawer:
         root = tk.Tk()
         root.geometry("400x100")
         text = "There is no possible solution to solve sudoku"
-        tk.Label(root, text=text, font=("Lucida Grande", 14)).pack(pady=20)
+        tk.Label(root, text=text, justify='center', font=("Lucida Grande", 14)).pack(pady=20)
         root.mainloop()
 
 
@@ -59,14 +69,5 @@ class SudokuDrawer:
 
 
 if __name__ == '__main__':
-    sudoku_board = [[5, 3, 0, 0, 7, 0, 0, 0, 0],
-            [6, 0, 0, 1, 9, 5, 0, 0, 0],
-            [0, 9, 8, 0, 0, 0, 0, 6, 0],
-            [8, 0, 0, 0, 6, 0, 0, 0, 3],
-            [4, 0, 0, 8, 0, 3, 0, 0, 1],
-            [7, 0, 0, 0, 2, 0, 0, 0, 6],
-            [0, 6, 0, 0, 0, 0, 2, 8, 0],
-            [0, 0, 0, 4, 1, 9, 0, 0, 5],
-            [0, 0, 0, 0, 8, 0, 0, 7, 9]]
-    drawer = SudokuDrawer(sudoku_board)
+    drawer = SudokuDrawer('board.txt')
     drawer.solve_sudoku()
