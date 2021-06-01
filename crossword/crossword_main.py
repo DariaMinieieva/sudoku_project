@@ -108,7 +108,7 @@ class CrosswordDrawer:
         """Draws one matrix with Tkinter."""
         root = tk.Tk()
         root.title(f"Option #{num_option}/{options}")
-        root.geometry(f"{40*self.num_row}x{38*self.num_col}")
+        root.geometry("500x500")
         font_style = tkFont.Font(family="Lucida Grande", size=20)
         for i in range(self.num_col):
             for j in range(self.num_row):
@@ -119,8 +119,8 @@ class CrosswordDrawer:
                     color = 'white'
                 if matrix[i, j] == '-':
                     matrix[i, j] = ''
-                entry = tk.Text(root, height=1, width=2, fg='black', bg=color, font=font_style)
-                entry.grid(row=i, column=j)
+                entry = tk.Text(root, fg='black', bg=color, font=font_style)
+                entry.place(x=j*(500/self.num_row), y=i*(500/self.num_col))
                 entry.insert(tk.END, matrix[i, j])
         root.mainloop()
 
@@ -137,8 +137,8 @@ class CrosswordDrawer:
 
 if __name__ == "__main__":
     try:
-        a = CrosswordDrawer('grid.txt')
-        a.visualize_crossword()
+        drawer = CrosswordDrawer('grid.txt')
+        drawer.visualize_crossword()
     except (AssertionError, IndexError, TypeError):
         print('Wrong index input in crossword file')
     except FileNotFoundError:
