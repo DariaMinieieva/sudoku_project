@@ -220,7 +220,7 @@ class Graph:
         return string_repr[:-1]
 
     def vizualize(self):
-        """Display the graph visualisation on the screen."""
+        """Display the graph visualization on the screen."""
 
         graph = nx.Graph()
         graph.add_edges_from(self._get_all_edges())
@@ -241,8 +241,12 @@ class Graph:
         nx.draw_networkx_labels(
             graph, positions, font_size=15, font_color='pink')
 
-        plt.show()
+        plt.savefig("graph.png") # write to a file
+        plt.show() # display on the screen
 
 
 if __name__ == '__main__':
-    pass
+    # example
+    g = Graph([('A', 'B'), ('B', 'C'), ('A', 'C'), ('C', 'D'), ('A', 'D')])
+    g.color_graph(3)
+    g.vizualize()
