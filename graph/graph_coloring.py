@@ -1,5 +1,8 @@
 """Module with graph coloring with backtracking method implementation."""
 
+import networkx as nx
+import matplotlib.pyplot as plt
+
 
 class Vertex:
     """Class to represent a graph vertex."""
@@ -54,7 +57,7 @@ class Edge:
         """Return edge vertices tuple as a string."""
         return f'({str(self._vertex_1)}, {str(self._vertex_2)})'
 
-# hjdhjd
+
 class Graph:
     """Class to represent a non-oriented graph based on dictionary."""
 
@@ -140,6 +143,17 @@ class Graph:
         """Get the list of all vertices in the graph."""
         return list(self._graph.keys())
 
+    def _get_all_edges(self) -> list:
+        """Get the sorted list of all edjes in the graph."""
+        all_edges = set()
+
+        for edges in self._graph.values():
+            for edge in edges:
+                vert_1, vert_2 = edge.get_edge_endpoints()
+                all_edges.add((str(vert_1), str(vert_2)))
+
+        return sorted(list(all_edges))
+
     def _get_connected_vertices(self, vertex: 'Vertex') -> set:
         """Get the set of all vertices connected to the particular one."""
         connected_vertices = set()
@@ -205,6 +219,34 @@ class Graph:
 
         return string_repr[:-1]
 
+    def vizualize(self):
+        """Display the graph visualization on the screen."""
+
+        graph = nx.Graph()
+        graph.add_edges_from(self._get_all_edges())
+        positions = nx.circular_layout(graph)
+
+        colors_map = []
+        try:
+            for vertex in self._get_all_vertices():
+                colors_map.append(vertex.get_color() * 0.1)
+        except TypeError:
+            # graph is not colorised, so display all the vertices white
+            colors_map = [1] * len(self._get_all_vertices())
+
+        nx.draw_networkx_nodes(graph, positions, node_color=colors_map,
+                               node_size=len(self._get_all_vertices()) * 200,
+                               cmap=plt.get_cmap('Blues'))
+        nx.draw_networkx_edges(graph, positions, edge_color='blue', width=1.5)
+        nx.draw_networkx_labels(
+            graph, positions, font_size=15, font_color='pink')
+
+        plt.savefig("graph.png") # write to a file
+        plt.show() # display on the screen
+
 
 if __name__ == '__main__':
-    pass
+    # example
+    g = Graph([('A', 'B'), ('B', 'C'), ('A', 'C'), ('C', 'D'), ('A', 'D')])
+    g.color_graph(3)
+    g.vizualize()
