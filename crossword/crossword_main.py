@@ -110,8 +110,8 @@ class CrosswordDrawer:
         root.title(f"Option #{num_option}/{options}")
         root.geometry("500x500")
         font_style = tkFont.Font(family="Lucida Grande", size=20)
-        for i in range(self.num_col):
-            for j in range(self.num_row):
+        for i in range(self.num_row):
+            for j in range(self.num_col):
                 if matrix[i, j] == '+':
                     color = 'black'
                     matrix[i, j] = ''
@@ -120,7 +120,7 @@ class CrosswordDrawer:
                 if matrix[i, j] == '-':
                     matrix[i, j] = ''
                 entry = tk.Text(root, fg='black', bg=color, font=font_style)
-                entry.place(x=j*(500/self.num_row), y=i*(500/self.num_col))
+                entry.place(x=j*(500/self.num_col), y=i*(500/self.num_row))
                 entry.insert(tk.END, matrix[i, j])
         root.mainloop()
 
