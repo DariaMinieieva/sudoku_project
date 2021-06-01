@@ -50,7 +50,7 @@ class CrosswordDrawer:
         return grid
 
 
-    def get_random(self, file: str) -> list:
+    def get_random(self, file='words.txt') -> list:
         """Returns random words from file."""
         words = []
         with open(file, encoding='utf-8') as words_f:
@@ -91,11 +91,14 @@ class CrosswordDrawer:
 
 
     def get_final_grid(self):
-        """Returns the grid after placing the words into it."""
+        """
+        Implements backtracking algorithm looking for possible ways of solving
+        the crossword and returns the number of different words placement options.
+        """
         if self.mode == 1:
             words = self.get_user_words()
         else:
-            words = self.get_random('words.txt')
+            words = self.get_random()
         self.solver.set_words(words)
         self.solver.place_words()
         return len(self.solver.matrix_results)
@@ -138,3 +141,5 @@ if __name__ == "__main__":
         a.visualize_crossword()
     except (AssertionError, IndexError, TypeError):
         print('Wrong index input in crossword file')
+    except FileNotFoundError:
+        print("There is no such file in the current directory")
