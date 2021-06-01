@@ -27,7 +27,7 @@ class SudokuDrawer:
                 else:
                     color = 'green'
                 entry = tk.Text(root, fg='black', bg=color, font=font_style)
-                entry.place(x=i*(500/9), y=j*(500/9))
+                entry.place(x=j*(500/9), y=i*(500/9))
                 entry.insert(tk.END, matrix[i][j])
         for i in range(1, 3):
             frame1 = tk.Frame(root, highlightbackground="black", \
