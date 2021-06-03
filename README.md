@@ -14,5 +14,11 @@ This project uses backtracking as a primary algorithm to solve above problems. B
 
 Detailed imformation can be found on wiki pages.
 
+### Installation
+To use this project you should install requirements.txt as following:
+```python
+pip install -r requirements.txt
+```
+
 ### License
 backtracking_games project is available under MIT license. See [LICENSE](https://github.com/DariaMinieieva/sudoku_project/blob/main/LICENSE "LICENSE") for more information.
